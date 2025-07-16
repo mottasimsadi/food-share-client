@@ -162,13 +162,24 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex gap-2">
-            <Link to="/login" className="btn btn-ghost hover:bg-[#ff6b35]">
+            <Link
+              to="/login"
+              className={`btn btn-ghost ${
+                isActive("/login")
+                  ? "bg-[#ff6b35] text-white"
+                  : "hover:bg-[#ff6b35]"
+              }`}
+            >
               <FaSignInAlt size={16} />
               Login
             </Link>
             <Link
               to="/register"
-              className="btn text-white bg-[#ff6b35] hover:bg-transparent hover:border-[#ff6b35] hover:text-[#ff6b35]"
+              className={`btn hover:bg-[#ff6b35] hover:text-white ${
+                isActive("/register")
+                  ? "bg-[#ff6b35] text-white"
+                  : "bg-transparent border-[#ff6b35] text-[#ff6b35]"
+              }`}
             >
               <FaUserPlus size={16} />
               Sign Up
