@@ -6,6 +6,8 @@ import {
   FaLeaf,
   FaHeart,
   FaGlobe,
+  FaChartLine,
+  FaShieldAlt,
 } from "react-icons/fa";
 
 const Home = () => {
@@ -90,6 +92,71 @@ const Home = () => {
                 <div className="text-gray-500">{stat.label}</div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Extra Section - 2 */}
+      {/* How It Works Section */}
+      <section className="py-20 bg-base-500">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4">How It Works</h2>
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+              Simple steps to share food and help your community
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="bg-[#ff6b35] text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaUsers size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Sign Up</h3>
+              <p className="text-gray-500">
+                Create your account and join our community of food sharers
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="bg-[#4ecdc4] text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaChartLine size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Share or Find</h3>
+              <p className="text-gray-500">
+                Post surplus food or browse available items in your area
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-center"
+            >
+              <div className="bg-[#ffd23f] text-black w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaShieldAlt size={28} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Connect</h3>
+              <p className="text-gray-500">
+                Meet safely and exchange food with verified community members
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>
