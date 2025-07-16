@@ -89,7 +89,7 @@ const Home = () => {
                 <div className="text-2xl font-bold text-[#ff6b35]">
                   {stat.value}
                 </div>
-                <div className="text-gray-500">{stat.label}</div>
+                <div>{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -99,7 +99,7 @@ const Home = () => {
       {/* Extra Section - 2 */}
       {/* How It Works Section */}
       <section className="py-20 bg-base-500">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -107,7 +107,7 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-            <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+            <p className="text-xl max-w-2xl mx-auto">
               Simple steps to share food and help your community
             </p>
           </motion.div>
@@ -123,7 +123,7 @@ const Home = () => {
                 <FaUsers size={28} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Sign Up</h3>
-              <p className="text-gray-500">
+              <p>
                 Create your account and join our community of food sharers
               </p>
             </motion.div>
@@ -138,7 +138,7 @@ const Home = () => {
                 <FaChartLine size={28} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Share or Find</h3>
-              <p className="text-gray-500">
+              <p>
                 Post surplus food or browse available items in your area
               </p>
             </motion.div>
@@ -153,11 +153,44 @@ const Home = () => {
                 <FaShieldAlt size={28} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Connect</h3>
-              <p className="text-gray-500">
+              <p>
                 Meet safely and exchange food with verified community members
               </p>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-[#ff6b35] to-[#4ecdc4] text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl font-bold mb-4">
+              Ready to Make a Difference?
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Join thousands of community members who are already sharing food
+              and reducing waste
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Link
+                to="/register"
+                className="btn bg-white text-[#ff6b35] btn-lg hover:opacity-70 border-none"
+              >
+                Get Started Today
+              </Link>
+              <Link
+                to="/available-foods"
+                className="btn bg-transparent btn-lg text-white border-white border-2 hover:bg-white hover:text-[#ff6b35]"
+              >
+                Browse Available Food
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>
