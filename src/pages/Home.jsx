@@ -2,9 +2,20 @@ import { motion } from "framer-motion";
 import { Link } from "react-router";
 import {
   FaArrowRight,
+  FaUsers,
+  FaLeaf,
+  FaHeart,
+  FaGlobe,
 } from "react-icons/fa";
 
 const Home = () => {
+
+    const stats = [
+      { icon: FaUsers, label: "Active Users", value: "1,200+" },
+      { icon: FaLeaf, label: "Food Saved", value: "2,500 kg" },
+      { icon: FaHeart, label: "Meals Shared", value: "5,000+" },
+      { icon: FaGlobe, label: "Communities", value: "15+" },
+    ];
 
   return (
     <div className="min-h-screen">
@@ -54,6 +65,32 @@ const Home = () => {
               </Link>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Extra Section - 1 */}
+      {/* Stats Section */}
+      <section className="py-20 bg-base-200">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-[#ff6b35] mb-4 flex justify-center">
+                  <stat.icon size={40} />
+                </div>
+                <div className="text-2xl font-bold text-[#ff6b35]">
+                  {stat.value}
+                </div>
+                <div className="text-gray-500">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
     </div>
