@@ -1,12 +1,13 @@
-import { Outlet } from "react-router";
-import Header from "../components/Header";
+import { Outlet, useNavigation } from "react-router";
+import Navbar from "../components/Navbar";
 
 const RootLayout = () => {
+  const { state } = useNavigation();
   return (
     <div>
-      <Header></Header>
+      <Navbar></Navbar>
       <main className="overflow-x-clip">
-        <Outlet></Outlet>
+        {state == "loading" ? <Loading></Loading> : <Outlet></Outlet>}
       </main>
     </div>
   );
