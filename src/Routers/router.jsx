@@ -21,7 +21,7 @@ const router = createBrowserRouter([
         Component: Login,
       },
       {
-        path: "/registration",
+        path: "/register",
         Component: Register,
       },
       {},

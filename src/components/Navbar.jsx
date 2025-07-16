@@ -12,15 +12,36 @@ import {
   FaSignOutAlt,
   FaBars,
   FaTimes,
+  FaUser,
 } from "react-icons/fa";
 import { AuthContext } from "../providers/AuthProvider";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logOut } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logOut()
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Logout Successful",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Logout Failed",
+          text: error.message || "Something went wrong",
+        });
+      });
+  };
 
   const navItems = [
     { to: "/", label: "Home", icon: FaHome },
@@ -138,21 +159,25 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow"
               style={{ boxShadow: "0 4px 6px -1px rgba(61,68,81,0.1)" }}
             >
+              <li className="menu-title text-base-100">
+                <span>{user.displayName}</span>
+              </li>
               <li>
-                <span className="justify-between font-semibold text-gray-800">
-                  {user.displayName || user.email}
-                  <span
-                    className="badge"
-                    style={{ backgroundColor: "#ff6b35", color: "white" }}
-                  >
-                    Profile
-                  </span>
-                </span>
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 px-3 py-2 mb-2 rounded-lg w-full text-left text-[#f87272] border bg-transparent hover:bg-[#f87272] hover:text-white"
+                >
+                  <FaUser size={16} />
+                  Profile
+                </Link>
               </li>
               <li>
                 <button
-                  onClick={logout}
-                  className="flex items-center gap-2 text-white hover:bg-[#f87272] px-3 py-2 rounded-lg w-full text-left"
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-[#f87272] border bg-transparent hover:bg-[#f87272] hover:text-white px-3 py-2 rounded-lg w-full text-left"
                 >
                   <FaSignOutAlt size={16} />
                   Logout
