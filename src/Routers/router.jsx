@@ -9,6 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import AvailableFoods from "../pages/AvailableFoods";
 import FoodDetails from "../components/FoodDetails";
 import axios from "axios";
+import ManageMyFoods from "../pages/ManageMyFoods";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AddFood></AddFood>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/manage-foods",
+        element: (
+          <PrivateRoute>
+            <ManageMyFoods></ManageMyFoods>
           </PrivateRoute>
         ),
       },
