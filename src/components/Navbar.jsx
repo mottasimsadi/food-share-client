@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { motion } from "framer-motion";
 import {
@@ -21,6 +21,21 @@ const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const dropdownRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const isActive = (path) => location.pathname === path;
 
@@ -64,7 +79,7 @@ const Navbar = () => {
       {/* Navbar Start */}
       <div className="navbar-start">
         {/* Mobile menu toggle */}
-        <div className="dropdown">
+        <div className="dropdown" ref={dropdownRef}>
           <button
             className="btn btn-ghost lg:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -77,29 +92,29 @@ const Navbar = () => {
             )}
           </button>
 
-          {isMenuOpen && (
-            <ul
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-              style={{ boxShadow: "0 4px 6px -1px rgba(61,68,81,0.1)" }}
-            >
-              {navItems.map((item) => (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
-                      isActive(item.to)
-                        ? "bg-[#ff6b35] text-white"
-                        : "hover:bg-[#ff6b35]"
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <item.icon size={16} />
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul
+            className={`menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow ${
+              isMenuOpen ? "block" : "hidden"
+            }`}
+            style={{ boxShadow: "0 4px 6px -1px rgba(61,68,81,0.1)" }}
+          >
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                    isActive(item.to)
+                      ? "bg-[#ff6b35] text-white"
+                      : "hover:bg-[#ff6b35]"
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <item.icon size={16} />
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Logo */}
