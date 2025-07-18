@@ -9,15 +9,53 @@ import {
   FaChartLine,
   FaShieldAlt,
 } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
+  const [foods, setFoods] = useState([]);
+  const [featuredFoods, setFeaturedFoods] = useState([]);
 
-    const stats = [
-      { icon: FaUsers, label: "Active Users", value: "1,200+" },
-      { icon: FaLeaf, label: "Food Saved", value: "2,500 kg" },
-      { icon: FaHeart, label: "Meals Shared", value: "5,000+" },
-      { icon: FaGlobe, label: "Communities", value: "15+" },
-    ];
+  const stats = [
+    { icon: FaUsers, label: "Active Users", value: "1,200+" },
+    { icon: FaLeaf, label: "Food Saved", value: "2,500 kg" },
+    { icon: FaHeart, label: "Meals Shared", value: "5,000+" },
+    { icon: FaGlobe, label: "Communities", value: "15+" },
+  ];
+
+  useEffect(() => {
+    const fetchFoods = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/featured-foods");
+        const sorted = res.data.sort((a, b) => b.quantity - a.quantity);
+        const top6 = sorted.slice(0, 6);
+        setFoods(top6);
+        setFeaturedFoods(top6);
+      } catch (error) {
+        console.error("Error fetching foods:", error);
+      }
+    };
+    fetchFoods();
+  }, []);
+
+  const calculateExpiresIn = (expireDateStr) => {
+    const now = new Date();
+    const expireDate = new Date(expireDateStr);
+    const diff = expireDate - now;
+
+    if (diff <= 0) return "Expired";
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+    let result = "";
+    if (days > 0) result += `${days}d `;
+    if (hours > 0 || days > 0) result += `${hours}h `;
+    result += `${minutes}m`;
+
+    return result;
+  };
 
   return (
     <div className="min-h-screen">
@@ -66,6 +104,89 @@ const Home = () => {
                 Share Food
               </Link>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Featured Foods Section */}
+      <section className="py-20 bg-base-100">
+        <div className="container mx-auto px-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4">Featured Foods</h2>
+            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+              Discover the highest quantity food options available in your
+              community
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredFoods.map((food, index) => (
+              <motion.div
+                key={food._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
+              >
+                <div className="aspect-video w-full rounded-md overflow-hidden mb-4">
+                  <img
+                    src={food.foodImage}
+                    alt={food.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{food.foodName}</h3>
+                <div className="space-y-2 text-sm text-base-content/70">
+                  <div className="flex justify-between">
+                    <span>Quantity:</span>
+                    <span className="font-medium">{food.foodQuantity}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Location:</span>
+                    <span className="font-medium">{food.pickupLocation}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Expires in:</span>
+                    <span className="font-medium text-warning">
+                      {calculateExpiresIn(food.expireDate)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Donor:</span>
+                    <span className="font-medium text-[#ff6b35]">
+                      {food.donorName}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <Link
+                    to={`/food/${food._id}`}
+                    className="btn bg-[#ff6b35] hover:bg-transparent hover:text-[#ff6b35] hover:border-[#ff6b35] flex-1"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mt-12"
+          >
+            <Link
+              to="/available-foods"
+              className="btn bg-[#ff6b35] hover:bg-transparent hover:text-[#ff6b35] hover:border-[#ff6b35] btn-lg"
+            >
+              Show All Foods <FaArrowRight size={20} />
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -123,9 +244,7 @@ const Home = () => {
                 <FaUsers size={28} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Sign Up</h3>
-              <p>
-                Create your account and join our community of food sharers
-              </p>
+              <p>Create your account and join our community of food sharers</p>
             </motion.div>
 
             <motion.div
@@ -138,9 +257,7 @@ const Home = () => {
                 <FaChartLine size={28} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Share or Find</h3>
-              <p>
-                Post surplus food or browse available items in your area
-              </p>
+              <p>Post surplus food or browse available items in your area</p>
             </motion.div>
 
             <motion.div

@@ -152,7 +152,7 @@ const AvailableFoods = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1"
+              className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
             >
               <div className="aspect-video w-full bg-base-200 rounded-lg mb-4 overflow-hidden">
                 <img
