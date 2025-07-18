@@ -19,6 +19,26 @@ const AvailableFoods = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("expireDate");
 
+  // Function to calculate expiration time
+  const calculateExpiresIn = (expireDateStr) => {
+    const now = new Date();
+    const expireDate = new Date(expireDateStr);
+    const diff = expireDate - now;
+
+    if (diff <= 0) return "Expired";
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+    let result = "";
+    if (days > 0) result += `${days}d `;
+    if (hours > 0 || days > 0) result += `${hours}h `;
+    result += `${minutes}m`;
+
+    return result;
+  };
+
   useEffect(() => {
     const fetchFoods = async () => {
       try {
@@ -28,30 +48,16 @@ const AvailableFoods = () => {
             sort: sortBy,
           },
         });
-        const enriched = res.data.map((item) => {
-          const now = new Date();
-          const expireDate = new Date(item.expireDate);
-          const diffMs = expireDate - now;
-          const hours = Math.floor(diffMs / (1000 * 60 * 60));
-          const days = Math.floor(hours / 24);
-          const expiresIn =
-            diffMs < 0
-              ? "Expired"
-              : days >= 1
-              ? `${days} day${days > 1 ? "s" : ""}`
-              : `${hours} hour${hours !== 1 ? "s" : ""}`;
-
-          return {
-            ...item,
-            name: item.foodName,
-            location: item.pickupLocation,
-            donor: item.donorName || "Anonymous",
-            quantity: item.foodQuantity,
-            image: item.imageUrl,
-            expireDate,
-            expiresIn,
-          };
-        });
+        const enriched = res.data.map((item) => ({
+          ...item,
+          name: item.foodName,
+          location: item.pickupLocation,
+          donor: item.donorName || "Anonymous",
+          quantity: item.foodQuantity,
+          image: item.imageUrl,
+          expireDate: new Date(item.expireDate),
+          expiresIn: calculateExpiresIn(item.expireDate),
+        }));
 
         setAvailableFoods(enriched);
       } catch (error) {
