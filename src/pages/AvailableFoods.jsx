@@ -69,11 +69,24 @@ const AvailableFoods = () => {
   }, [searchTerm, sortBy]);
 
   useEffect(() => {
-    const filtered = availableFoods.filter((food) =>
+    let filtered = availableFoods.filter((food) =>
       food.foodName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // Custom sort for quantity
+    if (sortBy === "quantity") {
+      filtered.sort((a, b) => {
+        const getNumber = (text) => {
+          const match = text.match(/\d+(\.\d+)?/); // extract numeric value
+          return match ? parseFloat(match[0]) : 0;
+        };
+        return getNumber(b.foodQuantity) - getNumber(a.foodQuantity);
+      });
+    }
+
     setFilteredFoods(filtered);
-  }, [availableFoods, searchTerm]);
+  }, [availableFoods, searchTerm, sortBy]);
+
 
   const toggleLayout = () => {
     setLayout((prev) => (prev === "grid-3" ? "grid-2" : "grid-3"));

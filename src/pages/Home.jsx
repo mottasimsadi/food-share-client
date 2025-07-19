@@ -27,7 +27,15 @@ const Home = () => {
     const fetchFoods = async () => {
       try {
         const res = await axios.get("http://localhost:3000/featured-foods");
-        const sorted = res.data.sort((a, b) => b.quantity - a.quantity);
+        const extractNumber = (str) => {
+          const match = str.match(/\d+(\.\d+)?/);
+          return match ? parseFloat(match[0]) : 0;
+        };
+
+        const sorted = res.data.sort(
+          (a, b) =>
+            extractNumber(b.foodQuantity) - extractNumber(a.foodQuantity)
+        );
         const top6 = sorted.slice(0, 6);
         setFoods(top6);
         setFeaturedFoods(top6);
