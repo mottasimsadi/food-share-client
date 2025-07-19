@@ -26,7 +26,9 @@ const Home = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/featured-foods");
+        const res = await axios.get(
+          "https://food-share-server-one.vercel.app/featured-foods"
+        );
         const extractNumber = (str) => {
           const match = str.match(/\d+(\.\d+)?/);
           return match ? parseFloat(match[0]) : 0;

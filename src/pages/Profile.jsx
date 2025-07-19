@@ -127,10 +127,10 @@ const Profile = () => {
       setIsLoading(true);
       try {
         const [donatedRes, requestedRes] = await Promise.all([
-          axios.get("http://localhost:3000/manage-foods", {
+          axios.get("https://food-share-server-one.vercel.app/manage-foods", {
             headers: { Authorization: `Bearer ${user.accessToken}` },
           }),
-          axios.get("http://localhost:3000/my-requests", {
+          axios.get("https://food-share-server-one.vercel.app/my-requests", {
             headers: { Authorization: `Bearer ${user.accessToken}` },
           }),
         ]);

@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("🚀 ~ unsubscribe ~ currentUser:", currentUser);
+      // console.log("🚀 ~ unsubscribe ~ currentUser:", currentUser);
       setUser(currentUser);
 
       axios.get("http://localhost:3000", {

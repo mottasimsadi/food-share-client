@@ -83,7 +83,7 @@ const FoodDetails = () => {
       // 1. PATCH request to update food status
       axios
         .patch(
-          `http://localhost:3000/request/${food._id}`,
+          `https://food-share-server-one.vercel.app/request/${food._id}`,
           {},
           {
             headers: {
@@ -94,7 +94,10 @@ const FoodDetails = () => {
         .then((res) => console.log(res.data));
 
       // 2. POST request to save request
-      axios.post("http://localhost:3000/requests", requestData);
+      axios.post(
+        "https://food-share-server-one.vercel.app/requests",
+        requestData
+      );
 
       setShowModal(false);
       Swal.fire({

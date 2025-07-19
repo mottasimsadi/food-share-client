@@ -42,12 +42,15 @@ const AvailableFoods = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/available-foods", {
-          params: {
-            search: searchTerm,
-            sort: sortBy,
-          },
-        });
+        const res = await axios.get(
+          "https://food-share-server-one.vercel.app/available-foods",
+          {
+            params: {
+              search: searchTerm,
+              sort: sortBy,
+            },
+          }
+        );
         const enriched = res.data.map((item) => ({
           ...item,
           name: item.foodName,
@@ -86,7 +89,6 @@ const AvailableFoods = () => {
 
     setFilteredFoods(filtered);
   }, [availableFoods, searchTerm, sortBy]);
-
 
   const toggleLayout = () => {
     setLayout((prev) => (prev === "grid-3" ? "grid-2" : "grid-3"));

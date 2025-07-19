@@ -54,27 +54,29 @@ const AddFood = () => {
       };
 
       // Send to backend
-      axios.post("http://localhost:3000/add-food", foodData).then((res) => {
-        // console.log("🚀 ~ axios.post ~ res:", res);
+      axios
+        .post("https://food-share-server-one.vercel.app/add-food", foodData)
+        .then((res) => {
+          // console.log("🚀 ~ axios.post ~ res:", res);
 
-        // Show success
-        Swal.fire({
-          icon: "success",
-          title: "Food added successfully!",
-          confirmButtonColor: "#4CAF50",
-        });
+          // Show success
+          Swal.fire({
+            icon: "success",
+            title: "Food added successfully!",
+            confirmButtonColor: "#4CAF50",
+          });
 
-        // Reset form
-        setFormData({
-          foodName: "",
-          foodImage: "",
-          foodQuantity: "",
-          pickupLocation: "",
-          expireDate: "",
-          additionalNotes: "",
+          // Reset form
+          setFormData({
+            foodName: "",
+            foodImage: "",
+            foodQuantity: "",
+            pickupLocation: "",
+            expireDate: "",
+            additionalNotes: "",
+          });
+          setLoading(false);
         });
-        setLoading(false);
-      });
     } catch (error) {
       console.error("Error adding food:", error);
       Swal.fire({

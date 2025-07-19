@@ -41,7 +41,7 @@ const router = createBrowserRouter([
         Component: FoodDetails,
         loader: async ({ params }) => {
           const { data } = await axios.get(
-            `http://localhost:3000/food/${params.foodId}`
+            `https://food-share-server-one.vercel.app/food/${params.foodId}`
           );
           return data;
         },

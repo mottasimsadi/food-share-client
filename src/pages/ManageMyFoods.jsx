@@ -28,9 +28,12 @@ const ManageMyFoods = () => {
   } = useQuery({
     queryKey: ["userFoods", user?.email],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:3000/manage-foods", {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      });
+      const { data } = await axios.get(
+        "https://food-share-server-one.vercel.app/manage-foods",
+        {
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        }
+      );
       return data;
     },
     enabled: !!user,
@@ -40,9 +43,12 @@ const ManageMyFoods = () => {
   // Mutation for deleting a food item
   const deleteMutation = useMutation({
     mutationFn: async (foodId) => {
-      await axios.delete(`http://localhost:3000/foods/${foodId}`, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      });
+      await axios.delete(
+        `https://food-share-server-one.vercel.app/foods/${foodId}`,
+        {
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["userFoods", user?.email]);
@@ -67,9 +73,13 @@ const ManageMyFoods = () => {
   // Mutation for updating a food item
   const updateMutation = useMutation({
     mutationFn: async ({ foodId, updatedData }) => {
-      await axios.patch(`http://localhost:3000/foods/${foodId}`, updatedData, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      });
+      await axios.patch(
+        `https://food-share-server-one.vercel.app/foods/${foodId}`,
+        updatedData,
+        {
+          headers: { Authorization: `Bearer ${user.accessToken}` },
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["userFoods", user?.email]);

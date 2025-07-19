@@ -17,11 +17,14 @@ const MyFoodRequest = () => {
   const { user } = useContext(AuthContext);
 
   const fetchMyRequests = async () => {
-    const res = await axios.get("http://localhost:3000/my-requests", {
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-    });
+    const res = await axios.get(
+      "https://food-share-server-one.vercel.app/my-requests",
+      {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      }
+    );
     return res.data;
   };
 
