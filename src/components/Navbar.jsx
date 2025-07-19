@@ -1,5 +1,5 @@
 import { useContext, useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import {
   FaHome,
@@ -19,25 +19,33 @@ import Swal from "sweetalert2";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
-  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Close menu when clicking outside
+  const mobileMenuRef = useRef(null);
+  const userMenuRef = useRef(null);
+
+  const isActive = (path) => location.pathname === path;
+
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
     logOut()
@@ -48,6 +56,8 @@ const Navbar = () => {
           timer: 1500,
           showConfirmButton: false,
         });
+        setIsUserMenuOpen(false);
+        navigate("/");
       })
       .catch((error) => {
         Swal.fire({
@@ -78,14 +88,13 @@ const Navbar = () => {
     >
       {/* Navbar Start */}
       <div className="navbar-start">
-        {/* Mobile menu toggle */}
-        <div className="dropdown" ref={dropdownRef}>
+        <div className="dropdown" ref={mobileMenuRef}>
           <button
             className="btn btn-ghost lg:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? (
+            {isMobileMenuOpen ? (
               <FaTimes size={20} className="text-[#ff6b35]" />
             ) : (
               <FaBars size={20} className="text-[#ff6b35]" />
@@ -94,9 +103,8 @@ const Navbar = () => {
 
           <ul
             className={`menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow ${
-              isMenuOpen ? "block" : "hidden"
+              isMobileMenuOpen ? "block" : "hidden"
             }`}
-            style={{ boxShadow: "0 4px 6px -1px rgba(61,68,81,0.1)" }}
           >
             {navItems.map((item) => (
               <li key={item.to}>
@@ -105,9 +113,9 @@ const Navbar = () => {
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                     isActive(item.to)
                       ? "bg-[#ff6b35] text-white"
-                      : "hover:bg-[#ff6b35]"
+                      : "hover:bg-[#ff6b35] hover:text-white"
                   }`}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <item.icon size={16} />
                   {item.label}
@@ -124,7 +132,6 @@ const Navbar = () => {
           style={{
             backgroundImage: "linear-gradient(135deg, #ff6b35, #ffd23f)",
             WebkitBackgroundClip: "text",
-            backgroundClip: "text",
           }}
         >
           🍽️ FoodShare
@@ -141,7 +148,7 @@ const Navbar = () => {
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition duration-200 ${
                   isActive(item.to)
                     ? "bg-[#ff6b35] text-white"
-                    : "hover:bg-[#ff6b35]"
+                    : "hover:bg-[#ff6b35] hover:text-white"
                 }`}
               >
                 <item.icon size={16} />
@@ -155,50 +162,52 @@ const Navbar = () => {
       {/* Navbar End */}
       <div className="navbar-end">
         {user ? (
-          <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar ring-2 ring-offset-2 ring-[#ff6b35]"
+          <div className="relative" ref={userMenuRef}>
+            <button
+              className="btn btn-ghost btn-circle avatar ring-2 ring-[#ff6b35]"
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               aria-label="User menu"
             >
               <div className="w-10 rounded-full">
                 <img
                   alt="User avatar"
-                  src={user.photoURL || "/api/placeholder/40/40"}
+                  src={
+                    user.photoURL ||
+                    "https://img.icons8.com/?size=100&id=H101gtpJBVoh&format=png&color=ffffff"
+                  }
                   referrerPolicy="no-referrer"
                 />
               </div>
-            </div>
-            <ul
-              className="menu menu-sm dropdown-content bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow"
-              style={{ boxShadow: "0 4px 6px -1px rgba(61,68,81,0.1)" }}
-            >
-              <li className="menu-title text-base-100">
-                <span>{user.displayName}</span>
-              </li>
-              <li>
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2 px-3 py-2 mb-2 rounded-lg w-full text-left text-[#f87272] border bg-transparent hover:bg-[#f87272] hover:text-white"
-                >
-                  <FaUser size={16} />
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center gap-2 text-[#f87272] border bg-transparent hover:bg-[#f87272] hover:text-white px-3 py-2 rounded-lg w-full text-left"
-                >
-                  <FaSignOutAlt size={16} />
-                  Logout
-                </button>
-              </li>
-            </ul>
+            </button>
+
+            {isUserMenuOpen && (
+              <ul className="absolute right-0 mt-3 w-52 z-50 bg-white rounded-lg shadow p-2">
+                <li className="menu-title text-gray-700 font-semibold mb-2 px-3">
+                  {user.displayName}
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      navigate("/profile");
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 mb-2 rounded-lg w-full text-left text-[#f87272] border hover:bg-[#f87272] hover:text-white"
+                  >
+                    <FaUser size={16} />
+                    Profile
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 text-[#f87272] border hover:bg-[#f87272] hover:text-white px-3 py-2 rounded-lg w-full text-left"
+                  >
+                    <FaSignOutAlt size={16} />
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            )}
           </div>
         ) : (
           <div className="flex gap-2">
@@ -207,7 +216,7 @@ const Navbar = () => {
               className={`btn btn-ghost ${
                 isActive("/login")
                   ? "bg-[#ff6b35] text-white"
-                  : "hover:bg-[#ff6b35]"
+                  : "hover:bg-[#ff6b35] hover:text-white"
               }`}
             >
               <FaSignInAlt size={16} />
