@@ -32,6 +32,7 @@ FoodShare Community is a full-stack MERN platform designed to connect communitie
 -   **UI/UX**:
     -   Framer Motion (for animations)
     -   Sweetalert (for notifications)
+-   **Hosted on**: Netlify
 
 ## Environment Variables
 
