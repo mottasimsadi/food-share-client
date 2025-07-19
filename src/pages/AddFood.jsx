@@ -56,7 +56,7 @@ const AddFood = () => {
       // Send to backend
       axios.post("http://localhost:3000/add-food", foodData).then((res) => {
         // console.log("🚀 ~ axios.post ~ res:", res);
-        
+
         // Show success
         Swal.fire({
           icon: "success",

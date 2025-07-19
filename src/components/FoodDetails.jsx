@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   FaArrowLeft,
   FaClock,
   FaMapMarkerAlt,
-  FaUser,
   FaEnvelope,
   FaCalendarAlt,
   FaFileAlt,
@@ -18,6 +18,7 @@ const FoodDetails = () => {
   const food = useLoaderData();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [additionalNotes, setAdditionalNotes] = useState("");
 
@@ -64,7 +65,7 @@ const FoodDetails = () => {
     setShowModal(true);
   };
 
-  const handleSubmitRequest = async () => {
+  const handleSubmitRequest = () => {
     const requestData = {
       foodId: food._id,
       foodName: food.foodName,
@@ -79,22 +80,31 @@ const FoodDetails = () => {
     };
 
     try {
-      // 1. POST request to save request
-      await axios.post("http://localhost:3000/requests", requestData);
+      // 1. PATCH request to update food status
+      axios
+        .patch(
+          `http://localhost:3000/request/${food._id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          }
+        )
+        .then((res) => console.log(res.data));
 
-      // 2. PATCH request to update food status
-      await axios.patch(`http://localhost:3000/food/${food._id}`, {
-        status: "requested",
-      });
+      // 2. POST request to save request
+      axios.post("http://localhost:3000/requests", requestData);
 
       setShowModal(false);
-      await Swal.fire({
+      Swal.fire({
         icon: "success",
         title: "Request Sent!",
         text: "Your food request has been submitted.",
         confirmButtonColor: "#22c55e",
       });
-
+      // Invalidate queries before navigating
+      queryClient.invalidateQueries(["requestedBy", user.email]);
       navigate("/my-requests");
     } catch (error) {
       console.error("Error submitting request:", error);
