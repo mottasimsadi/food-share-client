@@ -213,25 +213,25 @@ const Navbar = () => {
           <div className="flex gap-2">
             <Link
               to="/login"
-              className={`btn btn-ghost ${
+              className={`btn btn-sm md:btn-md btn-ghost ${
                 isActive("/login")
                   ? "bg-[#ff6b35] text-white"
                   : "hover:bg-[#ff6b35] hover:text-white"
               }`}
             >
-              <FaSignInAlt size={16} />
-              Login
+              <FaSignInAlt size={14} />
+              <span className="hidden sm:inline">Login</span>
             </Link>
             <Link
               to="/register"
-              className={`btn hover:bg-[#ff6b35] hover:text-white ${
+              className={`btn btn-sm md:btn-md hover:bg-[#ff6b35] hover:text-white ${
                 isActive("/register")
                   ? "bg-[#ff6b35] text-white"
                   : "bg-transparent border-[#ff6b35] text-[#ff6b35]"
               }`}
             >
-              <FaUserPlus size={16} />
-              Sign Up
+              <FaUserPlus size={14} />
+              <span className="hidden sm:inline">Sign Up</span>
             </Link>
           </div>
         )}

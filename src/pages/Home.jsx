@@ -303,7 +303,7 @@ const Home = () => {
               Join thousands of community members who are already sharing food
               and reducing waste
             </p>
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col gap-4 justify-center md:flex-row">
               <Link
                 to="/register"
                 className="btn bg-white text-[#ff6b35] btn-lg hover:opacity-70 border-none"
