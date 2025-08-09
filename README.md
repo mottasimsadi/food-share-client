@@ -56,11 +56,11 @@ To get a local copy up and running, follow these simple steps.
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/Programming-Hero-Web-Course4/b11a11-client-side-mottasimsadi
+    git clone https://github.com/mottasimsadi/food-share-client
     ```
 2.  **Navigate to the project directory:**
     ```sh
-    cd b11a11-client-side-mottasimsadi
+    cd food-share-client
     ```
 3.  **Install NPM packages:**
     ```sh
