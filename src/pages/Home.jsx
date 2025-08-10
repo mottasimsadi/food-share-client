@@ -456,8 +456,8 @@ const Home = () => {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-base-100">
-        <div className="container mx-auto px-20">
+      <section id="faq" className="py-20 bg-base-200">
+        <div className="container mx-auto px-4 md:px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -467,21 +467,29 @@ const Home = () => {
             <h2 className="text-4xl font-bold mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl max-w-2xl mx-auto">
-              Got questions? We’ve got answers.
+            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+              Have questions? We've got answers.
             </p>
           </motion.div>
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-3xl mx-auto space-y-4">
             {faqData.map((faq, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="mb-8"
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
               >
-                <h3 className="text-xl font-semibold mb-2">{faq.question}</h3>
-                <p className="text-base-content/70">{faq.answer}</p>
+                <div
+                  tabIndex={0}
+                  className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
+                >
+                  <div className="collapse-title text-xl font-medium">
+                    {faq.question}
+                  </div>
+                  <div className="collapse-content">
+                    <p className="text-base-content/80">{faq.answer}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
