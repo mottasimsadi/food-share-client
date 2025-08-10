@@ -229,7 +229,7 @@ const Home = () => {
 
       {/* Extra Section - 2 */}
       {/* How It Works Section */}
-      <section className="py-20 bg-base-500">
+      <section id="how-it-works" className="py-20 bg-base-500">
         <div className="container mx-auto px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -289,7 +289,10 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-[#ff6b35] to-[#4ecdc4] text-white">
+      <section
+        id="cta"
+        className="py-20 bg-gradient-to-r from-[#ff6b35] to-[#4ecdc4] text-white"
+      >
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

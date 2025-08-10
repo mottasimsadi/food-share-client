@@ -1,5 +1,6 @@
 import { Outlet, useNavigation } from "react-router";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const RootLayout = () => {
   const { state } = useNavigation();
@@ -9,6 +10,7 @@ const RootLayout = () => {
       <main className="overflow-x-clip">
         {state == "loading" ? <Loading></Loading> : <Outlet></Outlet>}
       </main>
+      <Footer></Footer>
     </div>
   );
 };
