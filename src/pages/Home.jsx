@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import {
   FaArrowRight,
   FaUsers,
@@ -16,6 +16,26 @@ import { FavoritesContext } from "../providers/FavoritesProvider";
 import Swal from "sweetalert2";
 
 const Home = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const scrollToElement = () => {
+        const element = document.getElementById(location.state.scrollTo);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      };
+
+      // Small delay to ensure page is fully loaded
+      const timer = setTimeout(scrollToElement, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
+
   const [foods, setFoods] = useState([]);
   const [featuredFoods, setFeaturedFoods] = useState([]);
 
@@ -530,6 +550,42 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section
+        id="cta"
+        className="py-20 bg-gradient-to-r from-[#ff6b35] to-[#4ecdc4] text-white"
+      >
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl font-bold mb-4">
+              Ready to Make a Difference?
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Join thousands of community members who are already sharing food
+              and reducing waste
+            </p>
+            <div className="flex flex-col gap-4 justify-center md:flex-row">
+              <Link
+                to="/register"
+                className="btn bg-white text-[#ff6b35] btn-lg hover:opacity-70 border-none"
+              >
+                Get Started Today
+              </Link>
+              <Link
+                to="/available-foods"
+                className="btn bg-transparent btn-lg text-white border-white border-2 hover:bg-white hover:text-[#ff6b35]"
+              >
+                Browse Available Food
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>
