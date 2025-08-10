@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 import axios from "axios";
+import Swal from "sweetalert2";
 import {
   FaSearch,
   FaFilter,
@@ -10,7 +11,10 @@ import {
   FaClock,
   FaMapMarkerAlt,
   FaUser,
+  FaHeart,
+  FaRegHeart,
 } from "react-icons/fa";
+import { FavoritesContext } from "../providers/FavoritesProvider";
 
 const AvailableFoods = () => {
   const [availableFoods, setAvailableFoods] = useState([]);
@@ -19,7 +23,11 @@ const AvailableFoods = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("expireDate");
 
-  // Function to calculate expiration time
+  // Get favorites state and functions from the context
+  const { favorites, addFavorite, removeFavorite } =
+    useContext(FavoritesContext);
+
+  // Calculate expiration time string
   const calculateExpiresIn = (expireDateStr) => {
     const now = new Date();
     const expireDate = new Date(expireDateStr);
@@ -51,14 +59,9 @@ const AvailableFoods = () => {
             },
           }
         );
+
         const enriched = res.data.map((item) => ({
           ...item,
-          name: item.foodName,
-          location: item.pickupLocation,
-          donor: item.donorName || "Anonymous",
-          quantity: item.foodQuantity,
-          image: item.imageUrl,
-          expireDate: new Date(item.expireDate),
           expiresIn: calculateExpiresIn(item.expireDate),
         }));
 
@@ -80,7 +83,7 @@ const AvailableFoods = () => {
     if (sortBy === "quantity") {
       filtered.sort((a, b) => {
         const getNumber = (text) => {
-          const match = text.match(/\d+(\.\d+)?/); // extract numeric value
+          const match = text.match(/\d+(\.\d+)?/);
           return match ? parseFloat(match[0]) : 0;
         };
         return getNumber(b.foodQuantity) - getNumber(a.foodQuantity);
@@ -92,6 +95,30 @@ const AvailableFoods = () => {
 
   const toggleLayout = () => {
     setLayout((prev) => (prev === "grid-3" ? "grid-2" : "grid-3"));
+  };
+
+  // Toggle favorite handler moved outside map
+  const handleToggleFavorite = (food, isFavorite, e) => {
+    e.stopPropagation();
+    if (isFavorite) {
+      removeFavorite(food._id);
+      Swal.fire({
+        icon: "info",
+        title: "Removed!",
+        text: `${food.foodName} has been removed from your favorites.`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
+      addFavorite(food);
+      Swal.fire({
+        icon: "success",
+        title: "Added!",
+        text: `${food.foodName} has been added to your favorites.`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
   };
 
   return (
@@ -161,63 +188,81 @@ const AvailableFoods = () => {
               : "grid-cols-1 md:grid-cols-2"
           }`}
         >
-          {filteredFoods.map((food, index) => (
-            <motion.div
-              key={food._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
-            >
-              <div className="aspect-video w-full bg-base-200 rounded-lg mb-4 overflow-hidden">
-                <img
-                  src={food.foodImage}
-                  alt={food.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+          {filteredFoods.map((food, index) => {
+            const isFavorite = favorites.some((fav) => fav._id === food._id);
 
-              <h3 className="text-xl font-semibold mb-3">{food.foodName}</h3>
-
-              <div className="space-y-2 text-sm mb-4">
-                <div className="flex items-center gap-2 text-base-content/70">
-                  <FaClock size={16} />
-                  <span>Expires in: </span>
-                  <span className="font-medium text-warning">
-                    {food.expiresIn}
-                  </span>
+            return (
+              <motion.div
+                key={food._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
+              >
+                <div className="aspect-video w-full bg-base-200 rounded-lg mb-4 overflow-hidden">
+                  <img
+                    src={food.foodImage}
+                    alt={food.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
-                <div className="flex items-center gap-2 text-base-content/70">
-                  <FaMapMarkerAlt size={16} />
-                  <span>Location: </span>
-                  <span className="font-medium">{food.pickupLocation}</span>
+                <h3 className="text-xl font-semibold mb-3">{food.foodName}</h3>
+
+                <div className="space-y-2 text-sm mb-4">
+                  <div className="flex items-center gap-2 text-base-content/70">
+                    <FaClock size={16} />
+                    <span>Expires in: </span>
+                    <span className="font-medium text-warning">
+                      {food.expiresIn}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-base-content/70">
+                    <FaMapMarkerAlt size={16} />
+                    <span>Location: </span>
+                    <span className="font-medium">{food.pickupLocation}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-base-content/70">
+                    <FaUser size={16} />
+                    <span>Donor: </span>
+                    <span className="font-medium text-primary">
+                      {food.donorName}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-base-content/70">
+                    <span>Quantity: </span>
+                    <span className="font-medium">{food.foodQuantity}</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-base-content/70">
-                  <FaUser size={16} />
-                  <span>Donor: </span>
-                  <span className="font-medium text-primary">
-                    {food.donorName}
-                  </span>
-                </div>
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={(e) => handleToggleFavorite(food, isFavorite, e)}
+                    className="btn btn-ghost btn-circle"
+                    aria-label={
+                      isFavorite ? "Remove from favorites" : "Add to favorites"
+                    }
+                  >
+                    {isFavorite ? (
+                      <FaHeart size={22} className="text-red-500" />
+                    ) : (
+                      <FaRegHeart size={22} className="text-base-content/70" />
+                    )}
+                  </button>
 
-                <div className="flex items-center gap-2 text-base-content/70">
-                  <span>Quantity: </span>
-                  <span className="font-medium">{food.foodQuantity}</span>
+                  <Link
+                    to={`/food/${food._id}`}
+                    className="btn bg-[#ff6b35] flex-1 hover:opacity-70"
+                  >
+                    View Details
+                  </Link>
                 </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Link
-                  to={`/food/${food._id}`}
-                  className="btn bg-[#ff6b35] flex-1 hover:opacity-70"
-                >
-                  View Details
-                </Link>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {filteredFoods.length === 0 && (
