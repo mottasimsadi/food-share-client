@@ -10,17 +10,25 @@ import {
   FaEnvelope,
   FaCalendarAlt,
   FaFileAlt,
+  FaHeart,
+  FaRegHeart,
 } from "react-icons/fa";
 import { AuthContext } from "../providers/AuthProvider";
+import { FavoritesContext } from "../providers/FavoritesProvider"; // Import favorites context
 import axios from "axios";
 
 const FoodDetails = () => {
   const food = useLoaderData();
   const { user } = useContext(AuthContext);
+  const { favorites, addFavorite, removeFavorite } =
+    useContext(FavoritesContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [additionalNotes, setAdditionalNotes] = useState("");
+
+  // Check if this food is already in favorites
+  const isFavorite = favorites.some((fav) => fav._id === food._id);
 
   const calculateExpiresIn = (expireDateStr) => {
     const now = new Date();
@@ -119,6 +127,29 @@ const FoodDetails = () => {
     }
   };
 
+  // Favorite toggle handler
+  const handleToggleFavorite = () => {
+    if (isFavorite) {
+      removeFavorite(food._id);
+      Swal.fire({
+        icon: "info",
+        title: "Removed!",
+        text: `${food.foodName} has been removed from your favorites.`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
+      addFavorite(food);
+      Swal.fire({
+        icon: "success",
+        title: "Added!",
+        text: `${food.foodName} has been added to your favorites.`,
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base-100 px-4 py-10">
       <div className="container mx-auto">
@@ -155,11 +186,30 @@ const FoodDetails = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="space-y-6"
           >
-            <div>
+            <div className="flex items-center justify-between">
               <h1 className="text-4xl font-bold mb-2">{food.foodName}</h1>
-              <div className="badge badge-success badge-lg capitalize mt-2">
-                {food.status}
-              </div>
+
+              {/* Favorite toggle button */}
+              <button
+                onClick={handleToggleFavorite}
+                aria-label={
+                  isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
+                className="btn btn-ghost btn-circle text-2xl"
+                title={
+                  isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
+              >
+                {isFavorite ? (
+                  <FaHeart className="text-red-500" />
+                ) : (
+                  <FaRegHeart className="text-base-content/70" />
+                )}
+              </button>
+            </div>
+
+            <div className="badge badge-success badge-lg capitalize mt-2">
+              {food.status}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
