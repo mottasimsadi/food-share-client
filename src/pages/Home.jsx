@@ -70,6 +70,29 @@ const Home = () => {
     },
   ];
 
+  const partnersData = [
+    {
+      name: "The Daily Grind Cafe",
+      logo: "https://logo.clearbit.com/square.com",
+    },
+    {
+      name: "Artisan Bakeshop",
+      logo: "https://logo.clearbit.com/toasttab.com",
+    },
+    {
+      name: "Greenleaf Organics",
+      logo: "https://logo.clearbit.com/wholefoodsmarket.com",
+    },
+    {
+      name: "City Harvest Grocers",
+      logo: "https://logo.clearbit.com/instacart.com",
+    },
+    {
+      name: "The Corner Perk",
+      logo: "https://logo.clearbit.com/starbucks.com",
+    },
+  ];
+
   useEffect(() => {
     const fetchFoods = async () => {
       try {
@@ -413,6 +436,43 @@ const Home = () => {
                     <p className="text-base-content/80">{faq.answer}</p>
                   </div>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section id="partners" className="py-20 bg-base-200">
+        <div className="container mx-auto px-4 md:px-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4">Our Community Partners</h2>
+            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+              We're proud to partner with local cafes, bakeries, and
+              organizations committed to our cause.
+            </p>
+          </motion.div>
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-16">
+            {partnersData.map((partner, index) => (
+              <motion.div
+                key={partner.name}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                title={partner.name}
+              >
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    className="h-12 md:h-16 filter transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
+                  />
+                </a>
               </motion.div>
             ))}
           </div>
