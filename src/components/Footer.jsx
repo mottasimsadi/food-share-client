@@ -21,8 +21,8 @@ const Footer = () => {
     { name: "Home", href: "/" },
     { name: "Available Foods", href: "/available-foods" },
     { name: "How It Works", href: "#how-it-works" },
-    { name: "About Us", href: "#about" },
-    { name: "Join Us", href: "#cta" },
+    { name: "Community Reviews", href: "#reviews" },
+    { name: "Our Partners", href: "#partners" },
   ];
 
   // Support links with modal content

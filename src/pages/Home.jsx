@@ -47,6 +47,29 @@ const Home = () => {
     },
   ];
 
+  const faqData = [
+    {
+      question: "Is the food safe to eat?",
+      answer:
+        "Donors are encouraged to share food that is fresh and handled safely. We provide guidelines on food safety, but it is the user's responsibility to check the food before consumption. When in doubt, it's best to discard it.",
+    },
+    {
+      question: "How do I arrange a pickup?",
+      answer:
+        "Once your food request is accepted, you can coordinate a pickup time and location with the donor through our platform's messaging feature (or as per the donor's notes). Always prioritize public and safe meeting places.",
+    },
+    {
+      question: "Is there a cost for the food?",
+      answer:
+        "No. FoodShare is a community platform based on generosity. All food listed on the platform must be offered completely free of charge. No payments or exchanges are permitted.",
+    },
+    {
+      question: "What kind of food can I share?",
+      answer:
+        "You can share a wide variety of items, including surplus groceries, leftover catered food, baked goods, and fresh produce from your garden. Please avoid sharing homemade meals unless you are a certified kitchen, and do not share anything you wouldn't eat yourself.",
+    },
+  ];
+
   useEffect(() => {
     const fetchFoods = async () => {
       try {
@@ -313,7 +336,7 @@ const Home = () => {
       </section>
 
       {/* Reviews Section */}
-      <section id="about" className="py-20 bg-base-200">
+      <section id="reviews" className="py-20 bg-base-200">
         <div className="container mx-auto px-4 md:px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -348,6 +371,47 @@ const Home = () => {
                   <p className="text-sm text-base-content/60">
                     {review.location}
                   </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 bg-base-100">
+        <div className="container mx-auto px-4 md:px-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+              Have questions? We've got answers.
+            </p>
+          </motion.div>
+          <div className="max-w-3xl mx-auto space-y-4">
+            {faqData.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+              >
+                <div
+                  tabIndex={0}
+                  className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
+                >
+                  <div className="collapse-title text-xl font-medium">
+                    {faq.question}
+                  </div>
+                  <div className="collapse-content">
+                    <p className="text-base-content/80">{faq.answer}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}
