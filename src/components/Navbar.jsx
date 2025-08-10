@@ -13,6 +13,7 @@ import {
   FaBars,
   FaTimes,
   FaUser,
+  FaRegHeart,
 } from "react-icons/fa";
 import { AuthContext } from "../providers/AuthProvider";
 import Swal from "sweetalert2";
@@ -71,6 +72,7 @@ const Navbar = () => {
   const navItems = [
     { to: "/", label: "Home", icon: FaHome },
     { to: "/available-foods", label: "Available Foods", icon: FaUsers },
+    { to: "/favorite-foods", label: "Favorite Foods", icon: FaRegHeart },
     ...(user
       ? [
           { to: "/add-food", label: "Add Food", icon: FaPlus },

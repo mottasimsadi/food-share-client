@@ -12,6 +12,7 @@ import axios from "axios";
 import ManageMyFoods from "../pages/ManageMyFoods";
 import MyFoodRequest from "../pages/MyFoodRequest";
 import Profile from "../pages/Profile";
+import FavoriteFoods from "../pages/FavoriteFoods";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "/available-foods",
         Component: AvailableFoods,
+      },
+      {
+        path: "/favorite-foods",
+        Component: FavoriteFoods,
       },
       {
         path: "/food/:foodId",
