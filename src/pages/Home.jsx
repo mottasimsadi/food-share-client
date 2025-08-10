@@ -497,33 +497,36 @@ const Home = () => {
       </section>
 
       {/* Partners Section */}
-      <section id="partners" className="py-20 bg-base-200">
-        <div className="container mx-auto px-20">
+      <section id="partners" className="py-20 bg-base-100">
+        <div className="container mx-auto px-4 md:px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Our Partners</h2>
-            <p className="text-xl max-w-2xl mx-auto">
-              We collaborate with local businesses and organizations
+            <h2 className="text-4xl font-bold mb-4">Our Community Partners</h2>
+            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+              We're proud to partner with local cafes, bakeries, and
+              organizations committed to our cause.
             </p>
           </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center">
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-16">
             {partnersData.map((partner, index) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
+                key={partner.name}
+                initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="flex justify-center"
+                title={partner.name}
               >
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="max-h-16 object-contain"
-                />
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    className="h-12 md:h-16 filter transform hover:-translate-y-1 shadow-2xl transition-all duration-300"
+                  />
+                </a>
               </motion.div>
             ))}
           </div>
