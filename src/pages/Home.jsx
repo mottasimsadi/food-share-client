@@ -23,6 +23,30 @@ const Home = () => {
     { icon: FaGlobe, label: "Communities", value: "15+" },
   ];
 
+  const reviewsData = [
+    {
+      name: "Sarah L.",
+      location: "Downtown",
+      quote:
+        "FoodShare has been a blessing! As a student, it's helped me get quality meals, and I love the feeling of community. It's amazing to see so little go to waste.",
+      image: "https://i.pravatar.cc/150?img=1",
+    },
+    {
+      name: "David Chen",
+      location: "West Suburbs",
+      quote:
+        "I own a small bakery, and this platform is the perfect way to share our end-of-day extras. It's easy to use, and I know the food is going to people who appreciate it.",
+      image: "https://i.pravatar.cc/150?img=32",
+    },
+    {
+      name: "Maria Garcia",
+      location: "North End",
+      quote:
+        "My kids and I look forward to checking the app. We've tried so many new things and met wonderful people in our neighborhood. It's more than just food; it's connection.",
+      image: "https://i.pravatar.cc/150?img=31",
+    },
+  ];
+
   useEffect(() => {
     const fetchFoods = async () => {
       try {
@@ -284,6 +308,49 @@ const Home = () => {
                 Meet safely and exchange food with verified community members
               </p>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section id="about" className="py-20 bg-base-200">
+        <div className="container mx-auto px-4 md:px-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4">What Our Community Says</h2>
+            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+              Real stories from users making a difference with FoodShare.
+            </p>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {reviewsData.map((review, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-base-200 p-8 rounded-2xl transition-all duration-300 transform hover:-translate-y-1 shadow-2xl flex flex-col items-center text-center"
+              >
+                <img
+                  src={review.image}
+                  alt={review.name}
+                  className="w-20 h-20 rounded-full mb-4 border-4 border-[#ff6b35]"
+                />
+                <p className="text-base-content/80 italic flex-grow">
+                  "{review.quote}"
+                </p>
+                <div className="mt-4">
+                  <h4 className="font-bold text-lg">{review.name}</h4>
+                  <p className="text-sm text-base-content/60">
+                    {review.location}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
