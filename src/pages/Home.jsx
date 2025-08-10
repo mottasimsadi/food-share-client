@@ -5,16 +5,23 @@ import {
   FaUsers,
   FaLeaf,
   FaHeart,
+  FaRegHeart,
   FaGlobe,
   FaChartLine,
   FaShieldAlt,
 } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { FavoritesContext } from "../providers/FavoritesProvider";
+import Swal from "sweetalert2";
 
 const Home = () => {
   const [foods, setFoods] = useState([]);
   const [featuredFoods, setFeaturedFoods] = useState([]);
+
+  // Get favorites state and functions from the context
+  const { favorites, addFavorite, removeFavorite } =
+    useContext(FavoritesContext);
 
   const stats = [
     { icon: FaUsers, label: "Active Users", value: "1,200+" },
@@ -205,54 +212,101 @@ const Home = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredFoods.map((food, index) => (
-              <motion.div
-                key={food._id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
-              >
-                <div className="aspect-video w-full rounded-md overflow-hidden mb-4">
-                  <img
-                    src={food.foodImage}
-                    alt={food.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{food.foodName}</h3>
-                <div className="space-y-2 text-sm text-base-content/70">
-                  <div className="flex justify-between">
-                    <span>Quantity:</span>
-                    <span className="font-medium">{food.foodQuantity}</span>
+            {featuredFoods.map((food, index) => {
+              const isFavorite = favorites.some((fav) => fav._id === food._id);
+
+              const handleToggleFavorite = (e) => {
+                e.stopPropagation();
+                if (isFavorite) {
+                  removeFavorite(food._id);
+                  Swal.fire({
+                    icon: "info",
+                    title: "Removed!",
+                    text: `${food.foodName} has been removed from your favorites.`,
+                    timer: 2000,
+                    showConfirmButton: false,
+                  });
+                } else {
+                  addFavorite(food);
+                  Swal.fire({
+                    icon: "success",
+                    title: "Added!",
+                    text: `${food.foodName} has been added to your favorites.`,
+                    timer: 2000,
+                    showConfirmButton: false,
+                  });
+                }
+              };
+
+              return (
+                <motion.div
+                  key={food._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-base-100 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
+                >
+                  <div className="aspect-video w-full rounded-md overflow-hidden mb-4">
+                    <img
+                      src={food.foodImage}
+                      alt={food.foodName}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="flex justify-between">
-                    <span>Location:</span>
-                    <span className="font-medium">{food.pickupLocation}</span>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {food.foodName}
+                  </h3>
+                  <div className="space-y-2 text-sm text-base-content/70">
+                    <div className="flex justify-between">
+                      <span>Quantity:</span>
+                      <span className="font-medium">{food.foodQuantity}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Location:</span>
+                      <span className="font-medium">{food.pickupLocation}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Expires in:</span>
+                      <span className="font-medium text-warning">
+                        {calculateExpiresIn(food.expireDate)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Donor:</span>
+                      <span className="font-medium text-[#ff6b35]">
+                        {food.donorName}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Expires in:</span>
-                    <span className="font-medium text-warning">
-                      {calculateExpiresIn(food.expireDate)}
-                    </span>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={handleToggleFavorite}
+                      className="btn btn-ghost btn-circle"
+                      aria-label={
+                        isFavorite
+                          ? "Remove from favorites"
+                          : "Add to favorites"
+                      }
+                    >
+                      {isFavorite ? (
+                        <FaHeart size={22} className="text-red-500" />
+                      ) : (
+                        <FaRegHeart
+                          size={22}
+                          className="text-base-content/70"
+                        />
+                      )}
+                    </button>
+                    <Link
+                      to={`/food/${food._id}`}
+                      className="btn bg-[#ff6b35] hover:bg-transparent hover:text-[#ff6b35] hover:border-[#ff6b35] flex-1"
+                    >
+                      View Details
+                    </Link>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Donor:</span>
-                    <span className="font-medium text-[#ff6b35]">
-                      {food.donorName}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-4 flex gap-2">
-                  <Link
-                    to={`/food/${food._id}`}
-                    className="btn bg-[#ff6b35] hover:bg-transparent hover:text-[#ff6b35] hover:border-[#ff6b35] flex-1"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
 
           <motion.div
@@ -403,7 +457,7 @@ const Home = () => {
 
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-base-100">
-        <div className="container mx-auto px-4 md:px-20">
+        <div className="container mx-auto px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -413,29 +467,21 @@ const Home = () => {
             <h2 className="text-4xl font-bold mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-              Have questions? We've got answers.
+            <p className="text-xl max-w-2xl mx-auto">
+              Got questions? We’ve got answers.
             </p>
           </motion.div>
-          <div className="max-w-3xl mx-auto space-y-4">
+          <div className="max-w-4xl mx-auto">
             {faqData.map((faq, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.15 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="mb-8"
               >
-                <div
-                  tabIndex={0}
-                  className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
-                >
-                  <div className="collapse-title text-xl font-medium">
-                    {faq.question}
-                  </div>
-                  <div className="collapse-content">
-                    <p className="text-base-content/80">{faq.answer}</p>
-                  </div>
-                </div>
+                <h3 className="text-xl font-semibold mb-2">{faq.question}</h3>
+                <p className="text-base-content/70">{faq.answer}</p>
               </motion.div>
             ))}
           </div>
@@ -444,74 +490,35 @@ const Home = () => {
 
       {/* Partners Section */}
       <section id="partners" className="py-20 bg-base-200">
-        <div className="container mx-auto px-4 md:px-20">
+        <div className="container mx-auto px-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Our Community Partners</h2>
-            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-              We're proud to partner with local cafes, bakeries, and
-              organizations committed to our cause.
+            <h2 className="text-4xl font-bold mb-4">Our Partners</h2>
+            <p className="text-xl max-w-2xl mx-auto">
+              We collaborate with local businesses and organizations
             </p>
           </motion.div>
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-16">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center">
             {partnersData.map((partner, index) => (
               <motion.div
-                key={partner.name}
-                initial={{ opacity: 0, scale: 0.8 }}
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                title={partner.name}
+                className="flex justify-center"
               >
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={partner.logo}
-                    alt={`${partner.name} logo`}
-                    className="h-12 md:h-16 filter transition-all duration-300 transform hover:-translate-y-1 shadow-2xl"
-                  />
-                </a>
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="max-h-16 object-contain"
+                />
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section
-        id="cta"
-        className="py-20 bg-gradient-to-r from-[#ff6b35] to-[#4ecdc4] text-white"
-      >
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl font-bold mb-4">
-              Ready to Make a Difference?
-            </h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Join thousands of community members who are already sharing food
-              and reducing waste
-            </p>
-            <div className="flex flex-col gap-4 justify-center md:flex-row">
-              <Link
-                to="/register"
-                className="btn bg-white text-[#ff6b35] btn-lg hover:opacity-70 border-none"
-              >
-                Get Started Today
-              </Link>
-              <Link
-                to="/available-foods"
-                className="btn bg-transparent btn-lg text-white border-white border-2 hover:bg-white hover:text-[#ff6b35]"
-              >
-                Browse Available Food
-              </Link>
-            </div>
-          </motion.div>
         </div>
       </section>
     </div>
