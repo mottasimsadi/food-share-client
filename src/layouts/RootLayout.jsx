@@ -1,6 +1,7 @@
 import { Outlet, useNavigation } from "react-router";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Loading from "../pages/Loading";
 
 const RootLayout = () => {
   const { state } = useNavigation();

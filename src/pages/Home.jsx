@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link, useLocation } from "react-router";
+import { Link, useLoaderData, useLocation } from "react-router";
 import {
   FaArrowRight,
   FaUsers,
@@ -10,39 +10,33 @@ import {
   FaChartLine,
   FaShieldAlt,
 } from "react-icons/fa";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { useContext, useEffect } from "react";
 import { FavoritesContext } from "../providers/FavoritesProvider";
 import Swal from "sweetalert2";
 
 const Home = () => {
   const location = useLocation();
+  // Get data from the router loader
+  const { featuredFoods } = useLoaderData();
 
+  // Get favorites context for the heart icons
+  const { favorites, addFavorite, removeFavorite } =
+    useContext(FavoritesContext);
+
+  // This useEffect is ONLY for scrolling after navigation
   useEffect(() => {
     if (location.state?.scrollTo) {
-      const scrollToElement = () => {
+      const timer = setTimeout(() => {
         const element = document.getElementById(location.state.scrollTo);
         if (element) {
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      };
-
-      // Small delay to ensure page is fully loaded
-      const timer = setTimeout(scrollToElement, 300);
+      }, 150);
       return () => clearTimeout(timer);
     }
   }, [location.state]);
 
-  const [foods, setFoods] = useState([]);
-  const [featuredFoods, setFeaturedFoods] = useState([]);
-
-  // Get favorites state and functions from the context
-  const { favorites, addFavorite, removeFavorite } =
-    useContext(FavoritesContext);
-
+  // Data for static sections
   const stats = [
     { icon: FaUsers, label: "Active Users", value: "1,200+" },
     { icon: FaLeaf, label: "Food Saved", value: "2,500 kg" },
@@ -120,31 +114,6 @@ const Home = () => {
     },
   ];
 
-  useEffect(() => {
-    const fetchFoods = async () => {
-      try {
-        const res = await axios.get(
-          "https://food-share-server-one.vercel.app/featured-foods"
-        );
-        const extractNumber = (str) => {
-          const match = str.match(/\d+(\.\d+)?/);
-          return match ? parseFloat(match[0]) : 0;
-        };
-
-        const sorted = res.data.sort(
-          (a, b) =>
-            extractNumber(b.foodQuantity) - extractNumber(a.foodQuantity)
-        );
-        const top6 = sorted.slice(0, 6);
-        setFoods(top6);
-        setFeaturedFoods(top6);
-      } catch (error) {
-        console.error("Error fetching foods:", error);
-      }
-    };
-    fetchFoods();
-  }, []);
-
   const calculateExpiresIn = (expireDateStr) => {
     const now = new Date();
     const expireDate = new Date(expireDateStr);
@@ -182,7 +151,7 @@ const Home = () => {
             className="max-w-md"
           >
             <h1 className="mb-5 text-5xl font-bold">
-              Share Food,
+              Share Food,{" "}
               <span className="bg-gradient-to-r from-[#ff6b35] to-[#ffd23f] text-transparent bg-clip-text">
                 {" "}
                 Share Hope
@@ -302,11 +271,7 @@ const Home = () => {
                     <button
                       onClick={handleToggleFavorite}
                       className="btn btn-ghost btn-circle"
-                      aria-label={
-                        isFavorite
-                          ? "Remove from favorites"
-                          : "Add to favorites"
-                      }
+                      aria-label="Toggle Favorite"
                     >
                       {isFavorite ? (
                         <FaHeart size={22} className="text-red-500" />

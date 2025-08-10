@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router";
-import router from "./Routers/router";
+import { createRouter } from "./Routers/router";
 import "./index.css";
 import AuthProvider from "./providers/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,11 +11,14 @@ import { FavoritesProvider } from "./providers/FavoritesProvider";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1, // Retry failed queries once
-      staleTime: 1000 * 60 * 5, // Cache queries for 5 minutes
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
   },
 });
+
+// Create the router instance by passing the queryClient
+const router = createRouter(queryClient);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
