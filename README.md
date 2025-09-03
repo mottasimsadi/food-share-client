@@ -2,7 +2,7 @@
 
 This is the client-side application for the FoodShare Community platform, built with React. It provides a user-friendly interface for browsing, adding, managing, and requesting surplus food items.
 
-**Live Site Link: [https://ph11-assign-11.netlify.app/](https://ph11-assign-11.netlify.app/)**
+**Live Site Link: [https://food-share-hub.netlify.app/](https://food-share-hub.netlify.app/)**
 
 ---
 
